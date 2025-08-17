@@ -1,0 +1,38 @@
+@garderie.app2.Server_HostAddress = http://localhost:5177
+
+GET {{garderie.app2.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{garderie.app2.Server_HostAddress}}/api/daycares
+
+###
+
+POST {{garderie.app2.Server_HostAddress}}/api/daycares
+Content-Type: application/json
+{
+  "name": "test daycare",
+  "user_id": 1
+}
+
+###
+
+@idGET=1
+GET {{garderie.app2.Server_HostAddress}}/api/daycares/{{idGET}}
+
+###
+
+@idPUT=1
+PUT {{garderie.app2.Server_HostAddress}}/api/daycares/{{idPUT}}
+Content-Type: application/json
+
+{
+  "name": "test daycare modified"
+}
+
+###
+@idDELETE=1
+DELETE {{garderie.app2.Server_HostAddress}}/api/daycares/{{idDELETE}}
+
+###

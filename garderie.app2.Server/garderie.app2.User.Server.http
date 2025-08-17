@@ -1,0 +1,41 @@
+@garderie.app2.Server_HostAddress = http://localhost:5177
+
+GET {{garderie.app2.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{garderie.app2.Server_HostAddress}}/api/users
+
+###
+
+POST {{garderie.app2.Server_HostAddress}}/api/users
+Content-Type: application/json
+{
+  "name": "John Doe",
+  "email": "test@test.com",
+  "password": "password"
+}
+
+###
+
+@idGET=3
+GET {{garderie.app2.Server_HostAddress}}/api/users/{{idGET}}
+
+###
+
+@idPUT=1002
+PUT {{garderie.app2.Server_HostAddress}}/api/users/{{idPUT}}
+Content-Type: application/json
+
+{
+  "name": "John Doe 2",
+  "email": "test@test.com",
+  "password": "password"
+}
+
+###
+@idDELETE=1002
+DELETE {{garderie.app2.Server_HostAddress}}/api/users/{{idDELETE}}
+
+###
