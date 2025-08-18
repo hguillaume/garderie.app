@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace garderie.app2.Server.Models.Entities
 {
-    public class Daycare
+    public class Kid
     {
         public int id { get; set; }
         
@@ -12,10 +12,8 @@ namespace garderie.app2.Server.Models.Entities
         public required string name { get; set; }
 
         // Relationships can be added here, e.g., to Users or other entities
-        public int userId { get; set; }
-        //public User user { get; set; }
-
-        public ICollection<Kid> Kids { get; set; }
+        public int daycareId { get; set; }
+        //public Daycare daycare { get; set; }
     }
 
 }

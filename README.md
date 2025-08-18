@@ -1,4 +1,4 @@
-Web application in ASP.NET Core, C# and Vue.
+Web application in ASP.NET Core, C# and React.
 
 > [!NOTE]
 > You need a database garderie.app2
@@ -10,3 +10,7 @@ Web application in ASP.NET Core, C# and Vue.
 > Go to Tools->NuGet Package Manager->Package Manager Console
 > 
 > `update-database`
+>
+> To add a migration
+>
+> `add-migration "MigrationName"`

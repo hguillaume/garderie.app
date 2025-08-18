@@ -19,7 +19,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // Required for session storage
+
 var app = builder.Build();
+
+app.UseSession();
 
 app.UseDefaultFiles();
 app.MapStaticAssets();

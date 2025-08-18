@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace garderie.app2.Server.Models.Entities
 {
@@ -17,5 +20,7 @@ namespace garderie.app2.Server.Models.Entities
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
         public required string password { get; set; }
+
+        public ICollection<Daycare> Daycares { get; set; }
     }
 }

@@ -11,8 +11,8 @@ using garderie.app2.Server.Data;
 namespace garderie.app2.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250223003828_InitialSetup")]
-    partial class InitialSetup
+    [Migration("20250818151557_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,29 @@ namespace garderie.app2.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("garderie.app2.Server.Models.Entities.Daycare", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("Daycares");
+                });
 
             modelBuilder.Entity("garderie.app2.Server.Models.Entities.User", b =>
                 {
@@ -49,6 +72,20 @@ namespace garderie.app2.Server.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("garderie.app2.Server.Models.Entities.Daycare", b =>
+                {
+                    b.HasOne("garderie.app2.Server.Models.Entities.User", "user")
+                        .WithMany("Daycares")
+                        .HasForeignKey("userId");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("garderie.app2.Server.Models.Entities.User", b =>
+                {
+                    b.Navigation("Daycares");
                 });
 #pragma warning restore 612, 618
         }

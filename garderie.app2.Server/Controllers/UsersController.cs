@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using garderie.app2.Server.Data;
+﻿using garderie.app2.Server.Data;
 using garderie.app2.Server.Models;
 using garderie.app2.Server.Models.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace garderie.app2.Server.Controllers
 {
@@ -30,7 +31,7 @@ namespace garderie.app2.Server.Controllers
         [HttpPost]
         public IActionResult Add([FromBody] AddUserDto userDto)
         {
-            var user = new User
+            var user = new Models.Entities.User
             {
                 name = userDto.name,
                 email = userDto.email,
@@ -59,6 +60,10 @@ namespace garderie.app2.Server.Controllers
         public IActionResult Get(int id)
         {
             var user = dbContext.Users.Find(id);
+
+            if(HttpContext != null && HttpContext.Session != null)
+                HttpContext.Session.SetString("userId", id.ToString());
+
             if (user == null)
             {
                 return NotFound();

@@ -13,5 +13,6 @@ namespace garderie.app2.Server.Data
         }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Daycare> Daycares { get; set; }
+        public virtual DbSet<Kid> Kids { get; set; }
     }
 }

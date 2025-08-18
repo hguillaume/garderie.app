@@ -12,11 +12,11 @@ using garderie.app2.Server.Models;
 namespace garderie.app2.Server.Tests;
 
 [TestClass]
-public class TestDaycaresControllerSQLiteInMemory
+public class TestKidsControllerSQLiteInMemory
 {
     public TestContext TestContext { get; set; }
 
-    private DaycaresController GetDefaultDaycaresControllerSQLiteInMemory()
+    private KidsController GetDefaultKidsControllerSQLiteInMemory()
     {
         var connection = new SqliteConnection("Data Source=:memory:");
         SQLitePCL.Batteries.Init();
@@ -37,22 +37,29 @@ public class TestDaycaresControllerSQLiteInMemory
             password = "TestPassword"
         });
 
-        DaycaresController controller = new DaycaresController(context);
+        DaycaresController daycareController = new DaycaresController(context);
+        daycareController.Add(new AddDaycareDto
+        {
+            name = "TestUser",
+            userId = 1
+        });
 
-        controller.Add(new AddDaycareDto
+        KidsController controller = new KidsController(context);
+
+        controller.Add(new AddKidDto
         {
             name = "John1",
-            userId = 1
+            daycareId = 1
         });
-        controller.Add(new AddDaycareDto
+        controller.Add(new AddKidDto
         {
             name = "John2",
-            userId = 1
+            daycareId = 1
         });
-        controller.Add(new AddDaycareDto
+        controller.Add(new AddKidDto
         {
             name = "John3",
-            userId = 1
+            daycareId = 1
         });
 
         return controller;
@@ -105,14 +112,19 @@ public class TestDaycaresControllerSQLiteInMemory
             TestContext.WriteLine("Content response is null");
             return;
         }
-        TestContext.WriteLine(JsonConvert.SerializeObject(response, Newtonsoft.Json.Formatting.Indented));
+        //TestContext.WriteLine(JsonConvert.SerializeObject(response, Newtonsoft.Json.Formatting.Indented));
+        TestContext.WriteLine(JsonConvert.SerializeObject(response, new JsonSerializerSettings
+        {
+            //ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.Indented
+        }));
     }
 
     [TestMethod]
     public void TestGetAll()
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
         var answer = controller.Get();
@@ -130,7 +142,7 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestGet(int Id)
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
         var answer = controller.Get(Id);
@@ -147,7 +159,7 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestGetNotFound(int Id)
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
         var answer = controller.Get(Id);
@@ -163,13 +175,13 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestAdd()
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
-        var answer = controller.Add(new AddDaycareDto
+        var answer = controller.Add(new AddKidDto
         {
             name = "John3",
-            userId = 1
+            daycareId = 1
         });
         WriteTestContext(answer);
         (var status, var response) = CommonCode(answer);
@@ -183,13 +195,13 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestAddBadRequest()
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
-        var answer = controller.Add(new AddDaycareDto
+        var answer = controller.Add(new AddKidDto
         {
             name = "",
-            userId = 1
+            daycareId = 1
         });
         WriteTestContext(answer);
         (var status, var response) = CommonCode(answer);
@@ -204,7 +216,7 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestRemove(int Id)
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
 
         // Act
         var answer = controller.Delete(Id);
@@ -222,13 +234,13 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestUpdate(int Id) {
         
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
         
         // Act
-        var answer = controller.Update(Id, new AddDaycareDto
+        var answer = controller.Update(Id, new AddKidDto
         {
             name = "JohnUpdated" + Id,
-            userId = 1
+            daycareId = 1
         }
         );
         WriteTestContext(answer);
@@ -244,13 +256,13 @@ public class TestDaycaresControllerSQLiteInMemory
     public void TestUpdateNotFound(int Id)
     {
         // Arrange
-        DaycaresController controller = GetDefaultDaycaresControllerSQLiteInMemory();
+        KidsController controller = GetDefaultKidsControllerSQLiteInMemory();
         
         // Act
-        var answer = controller.Update(Id, new AddDaycareDto
+        var answer = controller.Update(Id, new AddKidDto
         {
             name = "JohnUpdated" + Id,
-            userId = 1
+            daycareId = 1
         }
         );
         WriteTestContext(answer);

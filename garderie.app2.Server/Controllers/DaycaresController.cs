@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using garderie.app2.Server.Data;
 using garderie.app2.Server.Models;
 using garderie.app2.Server.Models.Entities;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace garderie.app2.Server.Controllers
 {
-    // localhost:port/api/Users
+    // localhost:port/api/Daycares
     [Route("api/[controller]")]
     [ApiController]
     public class DaycaresController : ControllerBase
@@ -23,7 +24,26 @@ namespace garderie.app2.Server.Controllers
         [HttpGet(Name = "GetDaycares")]
         public IActionResult Get()
         {
-            var allDaycares = dbContext.Daycares.ToList();
+            string? userId;
+            if (HttpContext == null || HttpContext.Session == null)
+            {
+                userId = "0"; // Default value if session is not available
+            }
+            else
+            {
+                userId = HttpContext.Session.GetString("userId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    userId = "0";
+                }
+            }
+
+            //var allDaycares = dbContext.Daycares.ToList();
+            var allDaycares = dbContext.Users
+                .SelectMany(user => user.Daycares)
+                //.Where(a => a.userId == 1)
+                .Where(a => a.userId == int.Parse(userId))
+                .ToList();
             return Ok(allDaycares);
         }
 
@@ -33,7 +53,7 @@ namespace garderie.app2.Server.Controllers
             var daycare = new Daycare
             {
                 name = daycareDto.name,
-                user_id = daycareDto.user_id,
+                userId = daycareDto.userId,
                 //email = userDto.email,
                 //password = userDto.password
             };
@@ -60,6 +80,10 @@ namespace garderie.app2.Server.Controllers
         public IActionResult Get(int id)
         {
             var daycare = dbContext.Daycares.Find(id);
+
+            if(HttpContext != null)
+                HttpContext.Session.SetString("daycareId", id.ToString());
+
             if (daycare == null)
             {
                 return NotFound();
