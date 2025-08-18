@@ -1,12 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Weatherforecast from './Weatherforecast.tsx'
+//import Weatherforecast from './Weatherforecast.tsx'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-    <Weatherforecast />
+    {/*<Weatherforecast />*/}
   </StrictMode>,
 )

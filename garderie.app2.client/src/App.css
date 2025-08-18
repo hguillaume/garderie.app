@@ -9,3 +9,26 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+/*button {
+    border: 1px solid;
+    border-color: blue;
+}*/
+
+/*button {
+    @extend .mx-auto;
+    @extend .flex;
+    @extend .max-w-sm;
+    @extend .items-center;
+    @extend .gap-x-4;
+    @extend .rounded-xl;
+    @extend .bg-white;
+    @extend .p-6;
+    @extend .shadow-lg;
+    @extend .outline;
+    @extend .outline-black/5;
+    @extend .dark:bg-slate-800;
+    @extend .dark:shadow-none;
+    @extend .dark:-outline-offset-1;
+    @extend .dark:outline-white/10;
+}*/
