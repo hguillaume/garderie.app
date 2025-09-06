@@ -155,6 +155,22 @@ public class TestUsersControllerSQLiteInMemory
     }
 
     [TestMethod]
+    public void TestGetLoggedInUserNotFound()
+    {
+        // Arrange
+        UsersController controller = GetDefaultUsersControllerSQLiteInMemory();
+
+        // Act
+        var answer = controller.GetLoggedInUser();
+        WriteTestContext(answer);
+        (var status, var response) = CommonCode(answer);
+
+        // Assert
+        Assert.AreEqual(404, status);
+        Assert.IsNull(response);
+    }
+
+    [TestMethod]
     public void TestAdd()
     {
         // Arrange
