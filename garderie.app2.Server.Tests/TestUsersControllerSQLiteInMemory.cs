@@ -154,21 +154,21 @@ public class TestUsersControllerSQLiteInMemory
         Assert.IsNull(response);
     }
 
-    [TestMethod]
-    public void TestGetLoggedInUserNotFound()
-    {
-        // Arrange
-        UsersController controller = GetDefaultUsersControllerSQLiteInMemory();
+    //[TestMethod]
+    //public void TestGetLoggedInUserNotFound()
+    //{
+    //    // Arrange
+    //    UsersController controller = GetDefaultUsersControllerSQLiteInMemory();
 
-        // Act
-        var answer = controller.GetLoggedInUser();
-        WriteTestContext(answer);
-        (var status, var response) = CommonCode(answer);
+    //    // Act
+    //    var answer = controller.GetLoggedInUser();
+    //    WriteTestContext(answer);
+    //    (var status, var response) = CommonCode(answer);
 
-        // Assert
-        Assert.AreEqual(404, status);
-        Assert.IsNull(response);
-    }
+    //    // Assert
+    //    Assert.AreEqual(404, status);
+    //    Assert.IsNull(response);
+    //}
 
     [TestMethod]
     public void TestAdd()

@@ -27,7 +27,7 @@ namespace garderie.app2.Server.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] AddUserDto userDto)
+        public IActionResult Login([FromBody] AddUserDto userDto)
         {
             var user = new Models.Entities.User
             {
@@ -72,7 +72,7 @@ namespace garderie.app2.Server.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Logout(int id)
         {
             var user = dbContext.Users.Find(id);
             if (user == null)

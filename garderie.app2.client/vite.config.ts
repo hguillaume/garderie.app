@@ -49,12 +49,18 @@ export default defineConfig({
         proxy: {
             '^/weatherforecast': {
                 target: 'http://localhost:5177',
+                changeOrigin: true,
                 secure: false
             },
             '^/api': {
                 target: 'http://localhost:5177',
+                changeOrigin: true,
                 secure: false
-            }
+            },
+            '^/register': {
+                target: 'http://localhost:5177',
+                changeOrigin: true,
+            },
         },
         port: parseInt(env.DEV_SERVER_PORT || '3450'),
         https: {

@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using garderie.app2.Server.Models.Entities;
 
 namespace garderie.app2.Server.Data
 {
-    public class ApplicationDbContext : DbContext
+    // Fix: Inherit only from IdentityDbContext<IdentityUser>, which itself inherits from DbContext.
+    //public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext() { }
 

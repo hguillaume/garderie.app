@@ -9,7 +9,12 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 // Add services to the container.
+//builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -64,6 +69,8 @@ builder.Services.AddDistributedMemoryCache(); // Required for session storage
 //});
 
 var app = builder.Build();
+
+app.MapIdentityApi<IdentityUser>();
 
 app.UseSession();
 
