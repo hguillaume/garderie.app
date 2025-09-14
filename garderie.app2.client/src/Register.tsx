@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import './App.css';
 import { Link } from 'react-router-dom';
+//import { error } from 'console';
 
 interface User {
     id: number;
@@ -12,10 +13,14 @@ interface User {
 
 function App() {
     const [users, setUsers] = useState<User[]>();
-    const [showForm, setShowForm] = useState(false);
+    const [showForm, setShowForm] = useState(true);
+    const [registerStatus, setRegisterStatus] = useState("");
+    const [listItems, setListItems] = useState([]);
+    const [listItemsColor, setListItemsColor] = useState("red");
 
     const nameRef = useRef();
     const emailRef = useRef();
+    const passwordRef = useRef();
 
     const handleButtonClickShowUserForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
@@ -52,10 +57,19 @@ function App() {
 
     return (
         <div>
-            <h1 id="tableLabel">Users</h1>
-            <ButtonAddAutoUser />
+            <h1 id="tableLabel">Register</h1>
+            {/*<ButtonAddAutoUser />*/}
             <ButtonShowFormUser />
-            {contents}
+            {/*<BuildListFromErrors errorList="" />*/}
+            <ul>
+                {listItems.map(li => (
+                    <li key={li.id} style={{ color: listItemsColor }} >{li.name}</li>
+                ))}
+            </ul>
+            {/*<div id="RegisterStatus">*/}
+                {/*{{ registerStatus }}*/}
+            {/*</div>*/}
+            {/*{contents}*/}
         </div>
     );
 
@@ -67,31 +81,31 @@ function App() {
         }
     }
 
-    function ButtonAddAutoUser() {
-        async function handleClick() {
-            axios
-                .post("/api/users", {
-                    name: "test",
-                    email: "test@test.com",
-                    password: "test123"
-                })
-                .then((response) => {
-                    console.log("User created:", response.data);
-                    populateUsersData();
-                })
-                .catch((error) => {
-                    console.error("Error creating user:", error);
-                });
-        }
+    //function ButtonAddAutoUser() {
+    //    async function handleClick() {
+    //        axios
+    //            .post("/api/users", {
+    //                name: "test",
+    //                email: "test@test.com",
+    //                password: "test123"
+    //            })
+    //            .then((response) => {
+    //                console.log("User created:", response.data);
+    //                populateUsersData();
+    //            })
+    //            .catch((error) => {
+    //                console.error("Error creating user:", error);
+    //            });
+    //    }
 
-        return (
-            <button onClick={handleClick}
-                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-            >
-                Add auto user
-            </button>
-        );
-    }
+    //    return (
+    //        <button onClick={handleClick}
+    //            className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+    //        >
+    //            Add auto user
+    //        </button>
+    //    );
+    //}
 
     function RemoveUser({ id }) {
         async function handleClick() {
@@ -117,47 +131,91 @@ function App() {
         );
     }
 
+    function isObject(value) {
+        return typeof value === 'object' && value !== null && !Array.isArray(value);
+    }
+
+    function BuildListFromErrors(errorList) {
+        //console.log("isObject:" + isObject(errorList));
+        //console.log("isArray:" + Array.isArray(errorList));
+        //console.log("BuildListFromErrors");
+        const list = [];
+        Object.keys(errorList).forEach(key => {
+            console.error(`${key}: ${errorList[key]}`);
+            //setListItems([...listItems, "<li>test</li>"]);
+            //list.push(<li>{errorList[key]}</li>);
+            list.push({id: key, name: errorList[key]});
+            //listItems.push(<li>test</li>);
+            //setListItems(listItems.concat("<li>{errorList[key]}</li>"));
+        });
+        setListItemsColor("red");
+        setListItems([...list]);
+        //return (
+        //    <div className="navigation">
+        //        <ul>
+        //            {list.map(li => (
+        //                <li>{li}</li>
+        //            ))}
+        //        </ul>
+        //    </div>
+        //);
+    }
+
     function ButtonShowFormUser() {
         async function handleClick(event) {
             //alert("test");
             event.preventDefault();
             axios
                 .post("/register", {
-                    name: nameRef.current.value,
+                    //name: nameRef.current.value,
                     email: emailRef.current.value,
-                    password: "test123456_"
+                    password: passwordRef.current.value,
+                    //password: "test123456_"
                 })
                 .then((response) => {
                     console.log("User created:", response.data);
-                    populateUsersData();
-                    setShowForm(false);
+                    //populateUsersData();
+                    //setShowForm(false);
+                    setListItemsColor("green");
+                    setListItems([{id: "UserCreatedSuccessfully", name: "User created successfully." }]);
                 })
                 .catch((error) => {
-                    console.error("Error creating user:", error);
+                    console.error("Error creating user: ", error);
+                    console.error("Error response: " + error.response.data.title, error.response.data.errors);
+                    //error.response.data.errors.map(err);
+                    //const el = buildListFromErrors(error.response.data.errors);
+                    //console.log(el);
+                    BuildListFromErrors(error.response.data.errors);
                 });
         }
 
         return (
             <div>
-                <button onClick={handleButtonClickShowUserForm}
-                    className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add user</button>
+                {/*<button onClick={handleButtonClickShowUserForm}*/}
+                {/*    className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"*/}
+                {/*>Show Form to add user</button>*/}
                 {showForm && (
                     <form>
-                        <label>
-                            Name:
-                            <input type="text" name="name" defaultValue="test" ref={nameRef}
-                            className="outline"
-                            />
-                        </label>
-                        <br />
+                        {/*<label>*/}
+                        {/*    Name:*/}
+                        {/*    <input type="text" name="name" defaultValue="test" ref={nameRef}*/}
+                        {/*    className="outline"*/}
+                        {/*    />*/}
+                        {/*</label>*/}
+                        {/*<br />*/}
                         <label>
                             Email:
                             <input type="email" name="email" defaultValue="test@test.com" ref={emailRef}
                             className="outline"
                             />
                         </label>
-                        {/*<input type="hidden" name="password" value="test123" />*/}
+                        <br />
+                        <label>
+                            Password:
+                            <input type="password" name="password" ref={passwordRef}
+                                className="outline"
+                            />
+                        </label>
                         <br />
                         <button type="submit" onClick={handleClick}
                             className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"

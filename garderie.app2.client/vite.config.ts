@@ -60,6 +60,12 @@ export default defineConfig({
             '^/register': {
                 target: 'http://localhost:5177',
                 changeOrigin: true,
+                secure: false
+            },
+            '^/login': {
+                target: 'http://localhost:5177',
+                changeOrigin: true,
+                secure: false
             },
         },
         port: parseInt(env.DEV_SERVER_PORT || '3450'),
