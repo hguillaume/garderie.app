@@ -11,17 +11,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>9.*-*</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MSTest" Version="3.8.0" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.0.24" />
+    <PackageReference Include="MSTest" Version="3.10.4" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.8.4" />
   </ItemGroup>
 
   <ItemGroup>

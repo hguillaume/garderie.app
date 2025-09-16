@@ -8,6 +8,7 @@ import Home from './Home';
 import User from './User';
 import Daycare from './Daycare';
 import Register from './Register';
+import Login from './Login';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/user/register" element={<Register />} />
+                <Route path="/user/login" element={<Login />} />
                 <Route path="/user/:userId" element={<User />} />
                 <Route path="/daycare/:daycareId" element={<Daycare />} />
             </Routes>

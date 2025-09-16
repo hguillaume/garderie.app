@@ -16,6 +16,8 @@ const certificateName = "garderie.app-csharp-react.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
+const httpTarget = `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`;
+
 if (!fs.existsSync(baseFolder)) {
     fs.mkdirSync(baseFolder, { recursive: true });
 }
@@ -48,22 +50,27 @@ export default defineConfig({
     server: {
         proxy: {
             '^/weatherforecast': {
-                target: 'http://localhost:5177',
+                target: httpTarget,
+                changeOrigin: true,
+                secure: false
+            },
+            '^/isuserauthenticated': {
+                target: httpTarget,
                 changeOrigin: true,
                 secure: false
             },
             '^/api': {
-                target: 'http://localhost:5177',
+                target: httpTarget,
                 changeOrigin: true,
                 secure: false
             },
             '^/register': {
-                target: 'http://localhost:5177',
+                target: httpTarget,
                 changeOrigin: true,
                 secure: false
             },
             '^/login': {
-                target: 'http://localhost:5177',
+                target: httpTarget,
                 changeOrigin: true,
                 secure: false
             },
