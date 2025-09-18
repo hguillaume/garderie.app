@@ -13,9 +13,10 @@ interface User {
 function App() {
     const [users, setUsers] = useState<User[]>();
     const [showForm, setShowForm] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const nameRef = useRef();
-    const emailRef = useRef();
+    const nameRef = useRef("");
+    const emailRef = useRef("");
 
     const handleButtonClickShowUserForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
@@ -23,6 +24,7 @@ function App() {
 
     useEffect(() => {
         populateUsersData();
+        isUserAuthenticated();
     }, []);
 
     const contents = users === undefined
@@ -52,15 +54,29 @@ function App() {
 
     return (
         <div>
-            <a href="/user/register">Register</a><br />
-            <a href="/user/login">Login</a><br />
-            <ButtonLogout />
+            {isLoggedIn == false && <><a href="/user/register">Register</a><br /></>}
+            {isLoggedIn == false && <><a href="/user/login">Login</a><br /></>}
+            {isLoggedIn == true && <ButtonLogout />}
             <h1 id="tableLabel">Users</h1>
             <ButtonAddAutoUser />
             <ButtonShowFormUser />
             {contents}
         </div>
     );
+
+    function isUserAuthenticated() {
+        axios
+            .get("/isuserauthenticated", {
+            })
+            .then((response) => {
+                console.log("IsUserAuthenticated:", response.data);
+                const boolValue = (response.data.toLowerCase() === "true"); // true
+                setIsLoggedIn(boolValue);
+            })
+            .catch((error) => {
+                console.error("Error logging out user:", error);
+            });
+    }
 
     async function populateUsersData() {
         const response = await fetch('/api/users');
