@@ -52,6 +52,9 @@ function App() {
 
     return (
         <div>
+            <a href="/user/register">Register</a><br />
+            <a href="/user/login">Login</a><br />
+            <ButtonLogout />
             <h1 id="tableLabel">Users</h1>
             <ButtonAddAutoUser />
             <ButtonShowFormUser />
@@ -65,6 +68,29 @@ function App() {
             const data = await response.json();
             setUsers(data);
         }
+    }
+
+    function ButtonLogout() {
+        async function handleClick() {
+            axios
+                .post("/logout", {
+                })
+                .then((response) => {
+                    console.log("User logged out:", response.data);
+                    //populateUsersData();
+                })
+                .catch((error) => {
+                    console.error("Error logging out user:", error);
+                });
+        }
+
+        return (
+            <button onClick={handleClick}
+                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+            >
+                Logout
+            </button>
+        );
     }
 
     function ButtonAddAutoUser() {

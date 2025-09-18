@@ -34,6 +34,7 @@ builder.Services
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     //.AddSignInManager<SignInManager<IdentityUser>>()
+    //.AddSignInManager()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

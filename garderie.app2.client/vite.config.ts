@@ -74,6 +74,11 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false
             },
+            '^/logout': {
+                target: httpTarget,
+                changeOrigin: true,
+                secure: false
+            },
         },
         port: parseInt(env.DEV_SERVER_PORT || '3450'),
         https: {

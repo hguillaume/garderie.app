@@ -23,6 +23,8 @@ public class IsUserAuthenticatedController : ControllerBase
     //[Authorize]
     public string Get()
     {
-        return "Is User Authenticated: " + User.Identity.IsAuthenticated;
+        //return "Is User Authenticated: " + User.Identity.IsAuthenticated
+        //    + "\n Authentication type: " + User.Identity.AuthenticationType;
+        return (User.Identity.IsAuthenticated).ToString();
     }
 }
