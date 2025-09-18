@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from "axios";
-import './App.css';
-import { useParams, Link } from 'react-router-dom';
+import '../App.css';
+import { Link } from 'react-router-dom';
 
 interface User {
     id: number;
@@ -10,55 +10,41 @@ interface User {
     password: string;
 }
 
-interface Daycare {
-    id: number;
-    userId: number;
-    name: string;
-}
-
-interface Kid {
-    id: number;
-    daycareId: number;
-    name: string;
-}
-
 function App() {
-    const { daycareId } = useParams(); // Access the `id` parameter from the route
-    const [user, setUser] = useState<User>();
-    const [daycare, setDaycare] = useState<Daycare>();
-    const [kids, setKids] = useState<Kid[]>();
+    const [users, setUsers] = useState<User[]>();
     const [showForm, setShowForm] = useState(false);
 
     const nameRef = useRef();
+    const emailRef = useRef();
 
-    const handleButtonClickShowForm = () => {
+    const handleButtonClickShowUserForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
     };
 
     useEffect(() => {
-        populateDaycareData();
-        populateKidsData();
+        populateUsersData();
     }, []);
 
-    const contents = kids === undefined
-        //? <i className="pi pi-spin pi-spinner"></i>
-        ? <div>No Kids</div>
+    const contents = users === undefined
+        ? <i className="pi pi-spin pi-spinner"></i>
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>DaycareId</th>
                     <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {kids.map(kid =>
-                    <tr key={kid.id}>
-                        <td>{kid.id}</td>
-                        <td>{kid.daycareId}</td>
-                        <td><Link to={"/daycare/" + kid.id}> {kid.name} </Link></td>
-                        <td> <RemoveKid id={kid.id} /> </td>
+                {users.map(user =>
+                    <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td><Link to={"/user/" + user.id}> {user.name} </Link></td>
+                        <td>{user.email}</td>
+                        <td>{user.password}</td>
+                        <td> <RemoveUser id={user.id} /> </td>
                     </tr>
                 )}
             </tbody>
@@ -66,58 +52,35 @@ function App() {
 
     return (
         <div>
-            {/*Hello {id}*/}
-            {/*Hello {user ? user.name : <i className='pi pi-spin pi-spinner'></i>}*/}
-            Daycare {daycare ? daycare.name : <i className='pi pi-spin pi-spinner'></i>}
-            <br /><ButtonAddAutoKid />
-            <br /><ButtonShowFormKid />
+            <h1 id="tableLabel">Users</h1>
+            <ButtonAddAutoUser />
+            <ButtonShowFormUser />
             {contents}
         </div>
     );
 
-    async function populateDaycareData() {
-        axios
-            .get("/api/daycares/" + daycareId, {
-                //id: 2
-            })
-            .then((response) => {
-                console.log("Request:", response.request);
-                console.log("User data:", response.data);
-                setDaycare(response.data);
-            })
-            .catch((error) => {
-                console.error("Error getting user data:", error);
-            });
+    async function populateUsersData() {
+        const response = await fetch('/api/users');
+        if (response.ok) {
+            const data = await response.json();
+            setUsers(data);
+        }
     }
 
-    async function populateKidsData() {
-        axios
-            .get("/api/kids/", {
-                daycareId: daycareId
-            })
-            .then((response) => {
-                console.log("Request:", response.request);
-                console.log("User data:", response.data);
-                setKids(response.data);
-            })
-            .catch((error) => {
-                console.error("Error getting user data:", error);
-            });
-    }
-
-    function ButtonAddAutoKid() {
+    function ButtonAddAutoUser() {
         async function handleClick() {
             axios
-                .post("/api/kids", {
+                .post("/api/users", {
                     name: "test",
-                    daycareId: daycareId
+                    email: "test@test.com",
+                    password: "test123"
                 })
                 .then((response) => {
-                    console.log("Daycare created:", response.data);
-                    populateKidsData();
+                    console.log("User created:", response.data);
+                    populateUsersData();
                 })
                 .catch((error) => {
-                    console.error("Error creating daycare:", error);
+                    console.error("Error creating user:", error);
                 });
         }
 
@@ -125,23 +88,23 @@ function App() {
             <button onClick={handleClick}
                 className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
-                Add auto Kid
+                Add auto user
             </button>
         );
     }
 
-    function RemoveKid({ id }) {
+    function RemoveUser({ id }) {
         async function handleClick() {
             axios
-                .delete("/api/kids/" + id, {
+                .delete("/api/users/"+id, {
                     //id: 2
                 })
                 .then((response) => {
-                    console.log("Daycare deleted:", response.data);
-                    populateKidsData();
+                    console.log("User deleted:", response.data);
+                    populateUsersData();
                 })
                 .catch((error) => {
-                    console.error("Error deleting daycare:", error);
+                    console.error("Error deleting user:", error);
                 });
         }
 
@@ -154,17 +117,19 @@ function App() {
         );
     }
 
-    function ButtonShowFormKid() {
+    function ButtonShowFormUser() {
         async function handleClick(event) {
+            //alert("test");
             event.preventDefault();
             axios
-                .post("/api/kids", {
+                .post("/api/users", {
                     name: nameRef.current.value,
-                    daycareId: daycareId
+                    email: emailRef.current.value,
+                    password: "test123"
                 })
                 .then((response) => {
                     console.log("User created:", response.data);
-                    populateKidsData();
+                    populateUsersData();
                     setShowForm(false);
                 })
                 .catch((error) => {
@@ -174,17 +139,25 @@ function App() {
 
         return (
             <div>
-                <button onClick={handleButtonClickShowForm}
+                <button onClick={handleButtonClickShowUserForm}
                     className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add Kid</button>
+                >Show Form to add user</button>
                 {showForm && (
                     <form>
                         <label>
                             Name:
                             <input type="text" name="name" defaultValue="test" ref={nameRef}
-                                className="outline"
+                            className="outline"
                             />
                         </label>
+                        <br />
+                        <label>
+                            Email:
+                            <input type="email" name="email" defaultValue="test@test.com" ref={emailRef}
+                            className="outline"
+                            />
+                        </label>
+                        {/*<input type="hidden" name="password" value="test123" />*/}
                         <br />
                         <button type="submit" onClick={handleClick}
                             className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"

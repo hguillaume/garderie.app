@@ -42,7 +42,7 @@ builder.Services.AddAuthorization();
 // Configure Cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.Name = "MyCustomCookie";
+    options.Cookie.Name = "LoginCookie";
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(365 * 100); // Cookie expiration
     options.LoginPath = "/Account/Login"; // Redirect path for unauthorized users

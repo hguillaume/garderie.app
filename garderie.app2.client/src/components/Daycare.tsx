@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from "axios";
-import './App.css';
+import '../App.css';
 import { useParams, Link } from 'react-router-dom';
 
 interface User {
@@ -16,41 +16,49 @@ interface Daycare {
     name: string;
 }
 
+interface Kid {
+    id: number;
+    daycareId: number;
+    name: string;
+}
+
 function App() {
-    const { userId } = useParams(); // Access the `id` parameter from the route
+    const { daycareId } = useParams(); // Access the `id` parameter from the route
     const [user, setUser] = useState<User>();
-    const [daycares, setDaycares] = useState<Daycare[]>();
+    const [daycare, setDaycare] = useState<Daycare>();
+    const [kids, setKids] = useState<Kid[]>();
     const [showForm, setShowForm] = useState(false);
 
     const nameRef = useRef();
 
-    const handleButtonClickShowDaycareForm = () => {
+    const handleButtonClickShowForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
     };
 
     useEffect(() => {
-        populateUserData();
-        populateDaycaresData();
+        populateDaycareData();
+        populateKidsData();
     }, []);
 
-    const contents = daycares === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
+    const contents = kids === undefined
+        //? <i className="pi pi-spin pi-spinner"></i>
+        ? <div>No Kids</div>
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>UserId</th>
+                    <th>DaycareId</th>
                     <th>Name</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {daycares.map(daycare =>
-                    <tr key={daycare.id}>
-                        <td>{daycare.id}</td>
-                        <td>{daycare.userId}</td>
-                        <td><Link to={"/daycare/" + daycare.id}> {daycare.name} </Link></td>
-                        <td> <RemoveDaycare id={daycare.id} /> </td>
+                {kids.map(kid =>
+                    <tr key={kid.id}>
+                        <td>{kid.id}</td>
+                        <td>{kid.daycareId}</td>
+                        <td><Link to={"/daycare/" + kid.id}> {kid.name} </Link></td>
+                        <td> <RemoveKid id={kid.id} /> </td>
                     </tr>
                 )}
             </tbody>
@@ -59,53 +67,54 @@ function App() {
     return (
         <div>
             {/*Hello {id}*/}
-            Hello {user ? user.name : <i className='pi pi-spin pi-spinner'></i>}
-            <br /><ButtonAddAutoDaycare />
-            <br /><ButtonShowFormDaycare />
+            {/*Hello {user ? user.name : <i className='pi pi-spin pi-spinner'></i>}*/}
+            Daycare {daycare ? daycare.name : <i className='pi pi-spin pi-spinner'></i>}
+            <br /><ButtonAddAutoKid />
+            <br /><ButtonShowFormKid />
             {contents}
         </div>
     );
 
-    async function populateUserData() {
+    async function populateDaycareData() {
         axios
-            .get("/api/users/" + userId, {
+            .get("/api/daycares/" + daycareId, {
                 //id: 2
             })
             .then((response) => {
                 console.log("Request:", response.request);
                 console.log("User data:", response.data);
-                setUser(response.data);
+                setDaycare(response.data);
             })
             .catch((error) => {
                 console.error("Error getting user data:", error);
             });
     }
 
-    async function populateDaycaresData() {
+    async function populateKidsData() {
         axios
-            .get("/api/daycares/", {
-                user_id: userId
+            .get("/api/kids/", {
+                daycareId: daycareId
             })
             .then((response) => {
                 console.log("Request:", response.request);
                 console.log("User data:", response.data);
-                setDaycares(response.data);
+                setKids(response.data);
             })
             .catch((error) => {
                 console.error("Error getting user data:", error);
             });
     }
 
-    function ButtonAddAutoDaycare() {
+    function ButtonAddAutoKid() {
         async function handleClick() {
             axios
-                .post("/api/daycares", {
+                .post("/api/kids", {
                     name: "test",
-                    userId: userId
+                    daycareId: daycareId
                 })
                 .then((response) => {
                     console.log("Daycare created:", response.data);
-                    populateDaycaresData();
+                    populateKidsData();
                 })
                 .catch((error) => {
                     console.error("Error creating daycare:", error);
@@ -116,20 +125,20 @@ function App() {
             <button onClick={handleClick}
                 className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
-                Add auto daycare
+                Add auto Kid
             </button>
         );
     }
 
-    function RemoveDaycare({ id }) {
+    function RemoveKid({ id }) {
         async function handleClick() {
             axios
-                .delete("/api/daycares/" + id, {
+                .delete("/api/kids/" + id, {
                     //id: 2
                 })
                 .then((response) => {
                     console.log("Daycare deleted:", response.data);
-                    populateDaycaresData();
+                    populateKidsData();
                 })
                 .catch((error) => {
                     console.error("Error deleting daycare:", error);
@@ -145,20 +154,17 @@ function App() {
         );
     }
 
-    function ButtonShowFormDaycare() {
+    function ButtonShowFormKid() {
         async function handleClick(event) {
-            //alert("test");
             event.preventDefault();
             axios
-                .post("/api/daycares", {
+                .post("/api/kids", {
                     name: nameRef.current.value,
-                    userId: userId
-                    //email: emailRef.current.value,
-                    //password: "test123"
+                    daycareId: daycareId
                 })
                 .then((response) => {
                     console.log("User created:", response.data);
-                    populateDaycaresData();
+                    populateKidsData();
                     setShowForm(false);
                 })
                 .catch((error) => {
@@ -168,9 +174,9 @@ function App() {
 
         return (
             <div>
-                <button onClick={handleButtonClickShowDaycareForm}
+                <button onClick={handleButtonClickShowForm}
                     className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add daycare</button>
+                >Show Form to add Kid</button>
                 {showForm && (
                     <form>
                         <label>
@@ -180,14 +186,6 @@ function App() {
                             />
                         </label>
                         <br />
-                        {/*<label>*/}
-                        {/*    Email:*/}
-                        {/*    <input type="email" name="email" defaultValue="test@test.com" ref={emailRef}*/}
-                        {/*        className="outline"*/}
-                        {/*    />*/}
-                        {/*</label>*/}
-                        {/*<input type="hidden" name="password" value="test123" />*/}
-                        {/*<br />*/}
                         <button type="submit" onClick={handleClick}
                             className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
                         >Submit</button>

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from "axios";
-import './App.css';
+import '../App.css';
 import { Link } from 'react-router-dom';
 
 interface User {
@@ -26,7 +26,7 @@ function App() {
     }, []);
 
     const contents = users === undefined
-        ? <i className="pi pi-spin pi-spinner"></i>
+        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
