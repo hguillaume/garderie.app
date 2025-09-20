@@ -196,6 +196,6 @@ function App() {
             </div>
         );
     }
-}
+} // End function App
 
 export default App;

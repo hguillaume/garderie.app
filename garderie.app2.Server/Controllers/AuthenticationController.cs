@@ -9,7 +9,7 @@ namespace garderie.app2.Server.Controllers;
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<IdentityUser>? _signInManager;
 
     public AuthenticationController(SignInManager<IdentityUser> signInManager)
     {
@@ -20,7 +20,7 @@ public class AuthenticationController : ControllerBase
     [Route("Logout")]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await _signInManager?.SignOutAsync();
         return Ok();
     }
 

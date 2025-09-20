@@ -41,7 +41,7 @@ public class TestKidsControllerSQLiteInMemory
         daycareController.Add(new AddDaycareDto
         {
             name = "TestUser",
-            userId = 1
+            AspNetUserId = "1"
         });
 
         KidsController controller = new KidsController(context);

@@ -42,17 +42,17 @@ public class TestDaycaresControllerSQLiteInMemory
         controller.Add(new AddDaycareDto
         {
             name = "John1",
-            userId = 1
+            AspNetUserId = "1"
         });
         controller.Add(new AddDaycareDto
         {
             name = "John2",
-            userId = 1
+            AspNetUserId = "1"
         });
         controller.Add(new AddDaycareDto
         {
             name = "John3",
-            userId = 1
+            AspNetUserId = "1"
         });
 
         return controller;
@@ -169,7 +169,7 @@ public class TestDaycaresControllerSQLiteInMemory
         var answer = controller.Add(new AddDaycareDto
         {
             name = "John3",
-            userId = 1
+            AspNetUserId = "1"
         });
         WriteTestContext(answer);
         (var status, var response) = CommonCode(answer);
@@ -189,7 +189,7 @@ public class TestDaycaresControllerSQLiteInMemory
         var answer = controller.Add(new AddDaycareDto
         {
             name = "",
-            userId = 1
+            AspNetUserId = "1"
         });
         WriteTestContext(answer);
         (var status, var response) = CommonCode(answer);
@@ -228,7 +228,7 @@ public class TestDaycaresControllerSQLiteInMemory
         var answer = controller.Update(Id, new AddDaycareDto
         {
             name = "JohnUpdated" + Id,
-            userId = 1
+            AspNetUserId = "1"
         }
         );
         WriteTestContext(answer);
@@ -250,7 +250,7 @@ public class TestDaycaresControllerSQLiteInMemory
         var answer = controller.Update(Id, new AddDaycareDto
         {
             name = "JohnUpdated" + Id,
-            userId = 1
+            AspNetUserId = "1"
         }
         );
         WriteTestContext(answer);

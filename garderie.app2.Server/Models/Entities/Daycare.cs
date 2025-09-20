@@ -12,7 +12,7 @@ namespace garderie.app2.Server.Models.Entities
         public required string name { get; set; }
 
         // Relationships can be added here, e.g., to Users or other entities
-        public int userId { get; set; }
+        public string? AspNetUserId { get; set; }
         //public User user { get; set; }
 
         public ICollection<Kid> Kids { get; set; }

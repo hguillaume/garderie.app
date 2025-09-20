@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using garderie.app2.Server.Data;
+﻿using garderie.app2.Server.Data;
 using garderie.app2.Server.Models;
 using garderie.app2.Server.Models.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace garderie.app2.Server.Controllers
 {
@@ -21,28 +23,27 @@ namespace garderie.app2.Server.Controllers
             dbContext.Database.EnsureCreated();
         }
 
+        public string? GetUserId()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return userId;
+        }
+
         [HttpGet(Name = "GetDaycares")]
         public IActionResult Get()
         {
-            string? userId;
-            if (HttpContext == null || HttpContext.Session == null)
-            {
-                userId = "0"; // Default value if session is not available
-            }
-            else
-            {
-                userId = HttpContext.Session.GetString("userId");
-                if (string.IsNullOrEmpty(userId))
-                {
-                    userId = "0";
-                }
-            }
+            string? userId = GetUserId();
 
-            //var allDaycares = dbContext.Daycares.ToList();
-            var allDaycares = dbContext.Users
-                .SelectMany(user => user.Daycares)
-                //.Where(a => a.userId == 1)
-                .Where(a => a.userId == int.Parse(userId))
+            Debug.WriteLine(userId);
+
+            //var allDaycares = dbContext.Users
+            //    .SelectMany(user => user.Daycares)
+            //    .Where(daycare => daycare.AspNetUserId == userId)
+            //    .ToList();
+
+            var allDaycares = dbContext.Daycares
+                //.SelectMany(user => user.Daycares)
+                .Where(daycare => daycare.AspNetUserId == userId)
                 .ToList();
             return Ok(allDaycares);
         }
@@ -50,10 +51,12 @@ namespace garderie.app2.Server.Controllers
         [HttpPost]
         public IActionResult Add([FromBody] AddDaycareDto daycareDto)
         {
+            string? userId = GetUserId();
             var daycare = new Daycare
             {
                 name = daycareDto.name,
-                userId = daycareDto.userId,
+                AspNetUserId = userId,
+                //AspNetUserId = daycareDto.AspNetUserId,
                 //email = userDto.email,
                 //password = userDto.password
             };

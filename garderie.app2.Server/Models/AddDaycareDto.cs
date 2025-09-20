@@ -4,6 +4,6 @@
     {
         public int id { get; set; }
         public required string name { get; set; }
-        public int userId { get; set; }
+        public string? AspNetUserId { get; set; }
     }
 }
