@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace garderie.app2.Server.Controllers;
 
 [ApiController]
-//[Route("[controller]")]
+[Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
     private readonly SignInManager<IdentityUser> _signInManager;
@@ -20,17 +21,31 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        //return Redirect("/");
         return Ok();
     }
 
     [HttpGet]
     [Route("IsUserAuthenticated")]
-    //[Authorize]
     public string IsUserAuthenticated()
     {
-        //return "Is User Authenticated: " + User.Identity.IsAuthenticated
-        //    + "\n Authentication type: " + User.Identity.AuthenticationType;
         return (User.Identity.IsAuthenticated).ToString();
+    }
+
+    [HttpGet]
+    [Route("GetUserName")]
+    public string GetUserName()
+    {
+        if(User.Identity.Name != null)
+            return (User.Identity.Name).ToString();
+        else
+            return "";
+    }
+
+    [HttpGet]
+    [Route("GetUserId")]
+    public string GetUserId()
+    {
+        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return userId;
     }
 }

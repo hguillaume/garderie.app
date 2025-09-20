@@ -54,11 +54,6 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false
             },
-            '^/isuserauthenticated': {
-                target: httpTarget,
-                changeOrigin: true,
-                secure: false
-            },
             '^/api': {
                 target: httpTarget,
                 changeOrigin: true,
@@ -74,11 +69,32 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false
             },
-            '^/logout': {
+            '^/authentication': {
                 target: httpTarget,
                 changeOrigin: true,
                 secure: false
             },
+
+            //'^/logout': {
+            //    target: httpTarget,
+            //    changeOrigin: true,
+            //    secure: false
+            //},
+            //'^/isuserauthenticated': {
+            //    target: httpTarget,
+            //    changeOrigin: true,
+            //    secure: false
+            //},
+            //'^/getusername': {
+            //    target: httpTarget,
+            //    changeOrigin: true,
+            //    secure: false
+            //},
+            //'^/getuserid': {
+            //    target: httpTarget,
+            //    changeOrigin: true,
+            //    secure: false
+            //},
         },
         port: parseInt(env.DEV_SERVER_PORT || '3450'),
         https: {

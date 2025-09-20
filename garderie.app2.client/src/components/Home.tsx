@@ -14,6 +14,8 @@ function App() {
     const [users, setUsers] = useState<User[]>();
     const [showForm, setShowForm] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [userId, setUserId] = useState("");
 
     const nameRef = useRef("");
     const emailRef = useRef("");
@@ -25,6 +27,10 @@ function App() {
     useEffect(() => {
         populateUsersData();
         isUserAuthenticated();
+        //if (isLoggedIn) {
+            getUserName();
+            getUserId();
+        //}
     }, []);
 
     const contents = users === undefined
@@ -54,10 +60,12 @@ function App() {
 
     return (
         <div>
+            {/*{isLoggedIn == true && <> Hello {userName} {userId} <br /></>}*/}
             {isLoggedIn == false && <><a href="/user/register">Register</a><br /></>}
             {isLoggedIn == false && <><a href="/user/login">Login</a><br /></>}
+            {isLoggedIn == true && <> Hello {userName} <br /></>}
             {isLoggedIn == true && <ButtonLogout />}
-            <h1 id="tableLabel">Users</h1>
+            <h1 id="tableLabel">Teachers</h1>
             <ButtonAddAutoUser />
             <ButtonShowFormUser />
             {contents}
@@ -66,7 +74,7 @@ function App() {
 
     function isUserAuthenticated() {
         axios
-            .get("/isuserauthenticated", {
+            .get("/authentication/isuserauthenticated", {
             })
             .then((response) => {
                 console.log("IsUserAuthenticated:", response.data);
@@ -74,7 +82,33 @@ function App() {
                 setIsLoggedIn(boolValue);
             })
             .catch((error) => {
-                console.error("Error logging out user:", error);
+                console.error("Error IsUserAuthenticated:", error);
+            });
+    }
+
+    function getUserName() {
+        axios
+            .get("/authentication/getusername", {
+            })
+            .then((response) => {
+                console.log("GetUserName:", response.data);
+                setUserName(response.data);
+            })
+            .catch((error) => {
+                console.error("Error GetUserName:", error);
+            });
+    }
+
+    function getUserId() {
+        axios
+            .get("/authentication/getuserid", {
+            })
+            .then((response) => {
+                console.log("GetUserId:", response.data);
+                setUserId(response.data);
+            })
+            .catch((error) => {
+                console.error("Error GetUserId:", error);
             });
     }
 
@@ -86,14 +120,19 @@ function App() {
         }
     }
 
+    function refreshPage() {
+        window.location.reload();
+    }
+
     function ButtonLogout() {
         async function handleClick() {
             axios
-                .post("/logout", {
+                .post("/authentication/logout", {
                 })
                 .then((response) => {
                     console.log("User logged out:", response.data);
-                    //populateUsersData();
+                    //isUserAuthenticated();
+                    refreshPage();
                 })
                 .catch((error) => {
                     console.error("Error logging out user:", error);
