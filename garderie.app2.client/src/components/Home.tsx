@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import '../App.css';
 import { Link } from 'react-router-dom';
@@ -15,10 +15,10 @@ function App() {
     const [showForm, setShowForm] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState("");
+    //const [userId, setUserId] = useState("");
 
-    const nameRef = useRef("");
-    const emailRef = useRef("");
+    const nameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
 
     const handleButtonClickShowUserForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
@@ -29,7 +29,7 @@ function App() {
         isUserAuthenticated();
         //if (isLoggedIn) {
             getUserName();
-            getUserId();
+            //getUserId();
         //}
     }, []);
 
@@ -99,18 +99,18 @@ function App() {
             });
     }
 
-    function getUserId() {
-        axios
-            .get("/authentication/getuserid", {
-            })
-            .then((response) => {
-                console.log("GetUserId:", response.data);
-                setUserId(response.data);
-            })
-            .catch((error) => {
-                console.error("Error GetUserId:", error);
-            });
-    }
+    //function getUserId() {
+    //    axios
+    //        .get("/authentication/getuserid", {
+    //        })
+    //        .then((response) => {
+    //            console.log("GetUserId:", response.data);
+    //            setUserId(response.data);
+    //        })
+    //        .catch((error) => {
+    //            console.error("Error GetUserId:", error);
+    //        });
+    //}
 
     async function populateUsersData() {
         const response = await fetch('/api/users');
@@ -174,7 +174,7 @@ function App() {
         );
     }
 
-    function RemoveUser({ id }) {
+    function RemoveUser({ id }: {id: number}) {
         async function handleClick() {
             axios
                 .delete("/api/users/"+id, {
@@ -199,13 +199,12 @@ function App() {
     }
 
     function ButtonShowFormUser() {
-        async function handleClick(event) {
-            //alert("test");
+        async function handleClick(event: React.MouseEvent) {
             event.preventDefault();
             axios
                 .post("/api/users", {
-                    name: nameRef.current.value,
-                    email: emailRef.current.value,
+                    name: nameRef.current?.value ?? "",
+                    email: emailRef.current?.value ?? "",
                     password: "test123"
                 })
                 .then((response) => {

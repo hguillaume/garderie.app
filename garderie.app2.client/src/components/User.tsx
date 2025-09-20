@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import '../App.css';
 import { useParams, Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ function App() {
     const [daycares, setDaycares] = useState<Daycare[]>();
     const [showForm, setShowForm] = useState(false);
 
-    const nameRef = useRef();
+    const nameRef = useRef<HTMLInputElement>(null);
 
     const handleButtonClickShowDaycareForm = () => {
         setShowForm(!showForm); // Show the form when the button is clicked
@@ -84,7 +84,7 @@ function App() {
     async function populateDaycaresData() {
         axios
             .get("/api/daycares/", {
-                user_id: userId
+                //user_id: userId
             })
             .then((response) => {
                 console.log("Request:", response.request);
@@ -121,7 +121,7 @@ function App() {
         );
     }
 
-    function RemoveDaycare({ id }) {
+    function RemoveDaycare({ id }: {id: number}) {
         async function handleClick() {
             axios
                 .delete("/api/daycares/" + id, {
@@ -146,12 +146,12 @@ function App() {
     }
 
     function ButtonShowFormDaycare() {
-        async function handleClick(event) {
+        async function handleClick(event: React.MouseEvent) {
             //alert("test");
             event.preventDefault();
             axios
                 .post("/api/daycares", {
-                    name: nameRef.current.value,
+                    name: nameRef.current?.value ?? "",
                     userId: userId
                     //email: emailRef.current.value,
                     //password: "test123"

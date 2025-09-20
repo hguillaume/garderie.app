@@ -28,24 +28,21 @@ public class AuthenticationController : ControllerBase
     [Route("IsUserAuthenticated")]
     public string IsUserAuthenticated()
     {
-        return (User.Identity.IsAuthenticated).ToString();
+        return (User?.Identity?.IsAuthenticated ?? false).ToString();
     }
 
     [HttpGet]
     [Route("GetUserName")]
-    public string GetUserName()
+    public string? GetUserName()
     {
-        if(User.Identity.Name != null)
-            return (User.Identity.Name).ToString();
-        else
-            return "";
+        return User?.Identity?.Name;
     }
 
     [HttpGet]
     [Route("GetUserId")]
-    public string GetUserId()
+    public string? GetUserId()
     {
-        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return userId;
     }
 }
