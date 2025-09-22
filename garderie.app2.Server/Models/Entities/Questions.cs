@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace garderie.app2.Server.Models.Entities
 {
-    public class Daycare
+    public class Question
     {
         public int id { get; set; }
         
@@ -11,12 +11,11 @@ namespace garderie.app2.Server.Models.Entities
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
         public required string name { get; set; }
 
-        // Relationships can be added here, e.g., to Users or other entities
-        public string? AspNetUserId { get; set; }
-        //public User user { get; set; }
+        public string? description { get; set; }
 
-        public ICollection<Kid> Kids { get; set; }
-        public ICollection<Question> Questions { get; set; }
+        // Relationships can be added here, e.g., to Users or other entities
+        public int daycareId { get; set; }
+        //public Daycare daycare { get; set; }
     }
 
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using garderie.app2.Server.Data;
 
@@ -11,9 +12,11 @@ using garderie.app2.Server.Data;
 namespace garderie.app2.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921230127_AddQuestions")]
+    partial class AddQuestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,32 +272,6 @@ namespace garderie.app2.Server.Migrations
                     b.ToTable("Kids");
                 });
 
-            modelBuilder.Entity("garderie.app2.Server.Models.Entities.Question", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("daycareId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("daycareId");
-
-                    b.ToTable("Questions");
-                });
-
             modelBuilder.Entity("garderie.app2.Server.Models.Entities.User", b =>
                 {
                     b.Property<int>("id")
@@ -389,20 +366,9 @@ namespace garderie.app2.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("garderie.app2.Server.Models.Entities.Question", b =>
-                {
-                    b.HasOne("garderie.app2.Server.Models.Entities.Daycare", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("daycareId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("garderie.app2.Server.Models.Entities.Daycare", b =>
                 {
                     b.Navigation("Kids");
-
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("garderie.app2.Server.Models.Entities.User", b =>
