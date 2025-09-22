@@ -75,6 +75,36 @@ namespace garderie.app2.Server.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+            // Create default questions for the new daycare
+            var question = new Question
+            {
+                name = "",
+                daycareId = daycare.id,
+            };
+
+            Debug.WriteLine(question.id);
+
+            question.name = "Domaine physique et moteur";
+            dbContext.Questions.Add(question);
+            int resultQuestion1= dbContext.SaveChanges();
+
+            question.name = "Domaine social et affectif";
+            question.id = 0;
+            dbContext.Questions.Add(question);
+            int resultQuestion2 = dbContext.SaveChanges();
+
+            question.name = "Domaine langagier";
+            question.id = 0;
+            dbContext.Questions.Add(question);
+            int resultQuestion3 = dbContext.SaveChanges();
+
+            question.name = "Domaine cognitif";
+            question.id = 0;
+            dbContext.Questions.Add(question);
+            int resultQuestion4 = dbContext.SaveChanges();
+
+
             return StatusCode(StatusCodes.Status201Created, daycare);
         }
 
