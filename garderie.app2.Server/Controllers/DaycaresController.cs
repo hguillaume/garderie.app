@@ -83,7 +83,7 @@ namespace garderie.app2.Server.Controllers
                 daycareId = daycare.id,
             };
 
-            Debug.WriteLine(question.id);
+            //Debug.WriteLine(question.id);
 
             question.name = "Domaine physique et moteur";
             dbContext.Questions.Add(question);

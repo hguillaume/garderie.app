@@ -60,7 +60,8 @@ function App() {
                     <tr key={kid.id}>
                         <td>{kid.id}</td>
                         <td>{kid.daycareId}</td>
-                        <td><Link to={"/daycare/" + kid.id}> {kid.name} </Link></td>
+                        {/*<td><Link to={"/daycare/" + kid.id}> {kid.name} </Link></td>*/}
+                        <td><Link to={"/daycare/" + daycareId + '/kid/' + kid.id}> {kid.name} </Link></td>
                         <td> <RemoveKid id={kid.id} /> </td>
                     </tr>
                 )}
