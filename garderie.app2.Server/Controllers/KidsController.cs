@@ -74,6 +74,28 @@ namespace garderie.app2.Server.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+            //Loop all daycare questions and create default empty answers for the new kid
+            var allQuestions = dbContext.Daycares
+                .Where(daycare => daycare.id == kid.daycareId)
+                .SelectMany(daycare => daycare.Questions)
+                .ToList();
+            foreach (var question in allQuestions)
+            {
+                var answer = new Answer
+                {
+                    name = question.name,
+                    description = "",
+                    kidId = kid.id,
+                    questionId = question.id,
+                    daycareId = kid.daycareId,
+                    //date = DateTime.Now
+                };
+                dbContext.Answers.Add(answer);
+                dbContext.SaveChanges();
+                answer = null;
+            }
+
             return StatusCode(StatusCodes.Status201Created, kid);
         }
 
