@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import '../App.css';
 import { useParams, Link } from 'react-router-dom';
@@ -22,6 +22,12 @@ interface Kid {
     name: string;
 }
 
+interface Question {
+    id: number;
+    daycareId: number;
+    name: string;
+}
+
 function App() {
     const { daycareId } = useParams(); // Access the `id` parameter from the route
     const [user, setUser] = useState<User>();
@@ -29,12 +35,32 @@ function App() {
     const [kids, setKids] = useState<Kid[]>();
     const [questions, setQuestions] = useState<Question[]>();
     const [showForm, setShowForm] = useState(false);
+    const [kidName, setKidName] = useState("");
+    const [questionName, setQuestionName] = useState("");
 
-    const nameRef = useRef("");
-    const nameQuestionRef = useRef("");
+    const nameRef = useRef<HTMLInputElement>(null);
+    const kidIdRef = useRef(0);
+    const nameQuestionRef = useRef<HTMLInputElement>(null);
+    const questionIdRef = useRef(0);
 
     const handleButtonClickShowForm = () => {
-        setShowForm(!showForm); // Show the form when the button is clicked
+        kidIdRef.current = 0;
+        questionIdRef.current = 0;
+        setKidName("");
+        setShowForm(!showForm); // Show or hide the form when the button is clicked
+        nameRef.current?.focus();
+    };
+
+    const handleButtonClickEditForm = (kidId: number) => {
+        kidIdRef.current = kidId;
+        setShowForm(true); // Show the form when the button is clicked
+        nameRef.current?.focus();
+    };
+
+    const handleButtonClickEditQuestionForm = (questionId: number) => {
+        questionIdRef.current = questionId;
+        setShowForm(true); // Show the form when the button is clicked
+        nameQuestionRef.current?.focus();
     };
 
     useEffect(() => {
@@ -62,6 +88,7 @@ function App() {
                         <td>{kid.daycareId}</td>
                         {/*<td><Link to={"/daycare/" + kid.id}> {kid.name} </Link></td>*/}
                         <td><Link to={"/daycare/" + daycareId + '/kid/' + kid.id}> {kid.name} </Link></td>
+                        <td> <EditKid id={kid.id} name={ kid.name } /> </td>
                         <td> <RemoveKid id={kid.id} /> </td>
                     </tr>
                 )}
@@ -86,7 +113,8 @@ function App() {
                         <td>{question.id}</td>
                         <td>{question.daycareId}</td>
                         <td><Link to={"/daycare/" + question.id}> {question.name} </Link></td>
-                        <td> <RemoveKid id={question.id} /> </td>
+                        <td> <EditQuestion id={question.id} name={question.name} /> </td>
+                        <td> <RemoveQuestion id={question.id} /> </td>
                     </tr>
                 )}
             </tbody>
@@ -100,6 +128,7 @@ function App() {
             <h1>Kids</h1>
             <br /><ButtonAddAutoKid />
             <br /><ButtonShowFormKid />
+            {/*<br /><ButtonEditFormKid />*/}
             {contents}
             <h1>Questions</h1>
             <br /><ButtonAddAutoQuestion />
@@ -126,7 +155,9 @@ function App() {
     async function populateKidsData() {
         axios
             .get("/api/kids/", {
-                daycareId: daycareId
+                params: {
+                    daycareId: daycareId
+                }
             })
             .then((response) => {
                 console.log("Request:", response.request);
@@ -141,7 +172,9 @@ function App() {
     async function populateQuestionsData() {
         axios
             .get("/api/questions/", {
-                daycareId: daycareId
+                params: {
+                    daycareId: daycareId
+                }
             })
             .then((response) => {
                 console.log("Request:", response.request);
@@ -178,7 +211,7 @@ function App() {
         );
     }
 
-    function RemoveKid({ id }) {
+    function RemoveKid({ id }: {id: number}) {
         async function handleClick() {
             axios
                 .delete("/api/kids/" + id, {
@@ -203,20 +236,40 @@ function App() {
     }
 
     function ButtonShowFormKid() {
-        async function handleClick(event) {
+        async function handleClick(event: React.MouseEvent) {
             event.preventDefault();
+
+            if(kidIdRef.current != 0) {
+                // Edit Kid
+                axios
+                    .put("/api/kids/" + kidIdRef.current, {
+                        name: nameRef.current?.value,
+                        daycareId: daycareId
+                    })
+                    .then((response) => {
+                        console.log("Kid updated:", response.data);
+                        populateKidsData();
+                        setShowForm(false);
+                    })
+                    .catch((error) => {
+                        console.error("Error updating Kid:", error);
+                    });
+                return;
+            }
+
+            // Add Kid
             axios
                 .post("/api/kids", {
-                    name: nameRef.current.value,
+                    name: nameRef.current?.value,
                     daycareId: daycareId
                 })
                 .then((response) => {
-                    console.log("User created:", response.data);
+                    console.log("Kid created:", response.data);
                     populateKidsData();
                     setShowForm(false);
                 })
                 .catch((error) => {
-                    console.error("Error creating user:", error);
+                    console.error("Error creating Kid:", error);
                 });
         }
 
@@ -224,12 +277,12 @@ function App() {
             <div>
                 <button onClick={handleButtonClickShowForm}
                     className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add Kid</button>
+                >Show Form to add or edit Kid</button>
                 {showForm && (
                     <form>
                         <label>
                             Name:
-                            <input type="text" name="name" defaultValue="test" ref={nameRef}
+                            <input type="text" name="name" defaultValue={kidName} ref={nameRef} tabIndex={0}
                                 className="outline"
                             />
                         </label>
@@ -243,7 +296,40 @@ function App() {
         );
     }
 
-    function ButtonAddAutoQuestion() {
+    function EditKid({ id, name }: {id: number, name: string}) {
+        async function handleClick() {
+            handleButtonClickEditForm(id);
+            // Set nameRef to name
+            //nameRef.current.value = name;
+            setKidName(name);
+            //nameRef.current?.focus();
+
+            //axios
+            //    .put("/api/kids/" + id, {
+            //        //id: 2
+            //    })
+            //    .then((response) => {
+            //        console.log("Daycare deleted:", response.data);
+            //        populateKidsData();
+            //    })
+            //    .catch((error) => {
+            //        console.error("Error deleting daycare:", error);
+            //    });
+        }
+
+        return (
+            <button onClick={handleClick}
+                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+            >
+                <i className="pi pi-pencil yellow" style={{ color: 'yellow' }}></i>
+            </button>
+        );
+    }
+
+
+
+    // Questions
+     function ButtonAddAutoQuestion() {
         async function handleClick() {
             axios
                 .post("/api/questions", {
@@ -268,7 +354,7 @@ function App() {
         );
     }
 
-    function RemoveQuestion({ id }) {
+    function RemoveQuestion({ id }: {id: number}) {
         async function handleClick() {
             axios
                 .delete("/api/questions/" + id, {
@@ -292,12 +378,61 @@ function App() {
         );
     }
 
+    function EditQuestion({ id, name }: { id: number, name: string }) {
+        async function handleClick() {
+            handleButtonClickEditQuestionForm(id);
+            // Set nameRef to name
+            //nameRef.current.value = name;
+            setQuestionName(name);
+            //nameRef.current?.focus();
+
+            //axios
+            //    .put("/api/kids/" + id, {
+            //        //id: 2
+            //    })
+            //    .then((response) => {
+            //        console.log("Daycare deleted:", response.data);
+            //        populateKidsData();
+            //    })
+            //    .catch((error) => {
+            //        console.error("Error deleting daycare:", error);
+            //    });
+        }
+
+        return (
+            <button onClick={handleClick}
+                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+            >
+                <i className="pi pi-pencil yellow" style={{ color: 'yellow' }}></i>
+            </button>
+        );
+    }
+
     function ButtonShowFormQuestion() {
-        async function handleClick(event) {
+        async function handleClick(event : React.MouseEvent) {
             event.preventDefault();
+
+            if (questionIdRef.current != 0) {
+                // Edit Question
+                axios
+                    .put("/api/questions/" + questionIdRef.current, {
+                        name: nameQuestionRef.current?.value,
+                        daycareId: daycareId
+                    })
+                    .then((response) => {
+                        console.log("Question updated:", response.data);
+                        populateQuestionsData();
+                        setShowForm(false);
+                    })
+                    .catch((error) => {
+                        console.error("Error updating Question:", error);
+                    });
+                return;
+            }
+
             axios
                 .post("/api/questions", {
-                    name: nameQuestionRef.current.value,
+                    name: nameQuestionRef.current?.value,
                     daycareId: daycareId
                 })
                 .then((response) => {
@@ -314,12 +449,12 @@ function App() {
             <div>
                 <button onClick={handleButtonClickShowForm}
                     className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add Question</button>
+                >Show Form to add or edit Question</button>
                 {showForm && (
                     <form>
                         <label>
                             Name:
-                            <input type="text" name="name" defaultValue="test" ref={nameQuestionRef}
+                            <input type="text" name="name" defaultValue={questionName} ref={nameQuestionRef}
                                 className="outline"
                             />
                         </label>

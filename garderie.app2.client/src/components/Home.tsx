@@ -22,6 +22,8 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
     const [daycares, setDaycares] = useState<Daycare[]>();
+    const [daycareName, setDaycareName] = useState("");
+    const [daycareId, setDaycareId] = useState(0);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -31,7 +33,15 @@ function App() {
     };
 
     const handleButtonClickShowDaycareForm = () => {
+        setDaycareId(0); // Reset daycareId when adding a new daycare
+        setDaycareName(""); // Reset daycareName when adding a new daycare
         setShowForm(!showForm); // Show the form when the button is clicked
+    };
+
+    const handleButtonClickShowDaycareEditForm = (id: number, name: string) => {
+        setDaycareId(id);
+        setDaycareName(name);
+        setShowForm(true);
     };
 
     useEffect(() => {
@@ -83,7 +93,8 @@ function App() {
                         <td>{daycare.id}</td>
                         <td>{daycare.userId}</td>
                         <td><Link to={"/daycare/" + daycare.id}> {daycare.name} </Link></td>
-                        {/*<td> <RemoveDaycare id={daycare.id} /> </td>*/}
+                        <td> <EditDaycare id={daycare.id} name={daycare.name} /> </td>
+                        <td> <RemoveDaycare id={daycare.id} /> </td>
                     </tr>
                 )}
             </tbody>
@@ -244,6 +255,57 @@ function App() {
         );
     }
 
+    function RemoveDaycare({ id }: { id: number }) {
+        async function handleClick() {
+            axios
+                .delete("/api/daycares/" + id, {
+                    //id: 2
+                })
+                .then((response) => {
+                    console.log("Daycare deleted:", response.data);
+                    populateDaycaresData();
+                })
+                .catch((error) => {
+                    console.error("Error deleting daycare:", error);
+                });
+        }
+        return (
+            <button onClick={handleClick}
+                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+            >
+                <i className="pi pi-trash red" style={{ color: 'red' }}></i>
+            </button>
+        );
+    }
+
+    function EditDaycare({ id, name }: { id: number, name: string }) {
+        async function handleClick() {
+            //setDaycareId(id);
+            //setDaycareName(name);
+            handleButtonClickShowDaycareEditForm(id, name);
+            //if (name) {
+            //    axios
+            //        .put("/api/daycares/" + id, {
+            //            name: name
+            //        })
+            //        .then((response) => {
+            //            console.log("Daycare updated:", response.data);
+            //            populateDaycaresData();
+            //        })
+            //        .catch((error) => {
+            //            console.error("Error updating daycare:", error);
+            //        });
+            //}
+        }
+        return (
+            <button onClick={handleClick}
+                className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+            >
+                <i className="pi pi-pencil yellow" style={{ color: 'blue' }}></i>
+            </button>
+        );
+    }
+
     function ButtonShowFormUser() {
         async function handleClick(event: React.MouseEvent) {
             event.preventDefault();
@@ -298,6 +360,27 @@ function App() {
         async function handleClick(event: React.MouseEvent) {
             //alert("test");
             event.preventDefault();
+            if (daycareId) {
+                axios
+                    .put("/api/daycares/" + daycareId, {
+                        name: nameRef.current?.value ?? "",
+                        //userId: userId
+                        //email: emailRef.current.value,
+                        //password: "test123"
+                    })
+                    .then((response) => {
+                        console.log("Daycare updated:", response.data);
+                        populateDaycaresData();
+                        setShowForm(false);
+                    })
+                    .catch((error) => {
+                        console.error("Error updating daycare:", error);
+                    });
+                return;
+            }
+
+
+
             axios
                 .post("/api/daycares", {
                     name: nameRef.current?.value ?? "",
@@ -319,12 +402,12 @@ function App() {
             <div>
                 <button onClick={handleButtonClickShowDaycareForm}
                     className="shadow-lg outline outline-black/9 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                >Show Form to add daycare</button>
+                >Show Form to add or edit daycare</button>
                 {showForm && (
                     <form>
                         <label>
                             Name:
-                            <input type="text" name="name" defaultValue="test" ref={nameRef}
+                            <input type="text" name="name" defaultValue={daycareName} ref={nameRef}
                                 className="outline"
                             />
                         </label>
