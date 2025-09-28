@@ -104,7 +104,7 @@ function App() {
             {/*Hello {user ? user.name : <i className='pi pi-spin pi-spinner'></i>}*/}
             Daycare {daycare ? daycare.name : <i className='pi pi-spin pi-spinner'></i>}
             <h1>Answers</h1>
-            <br /><ButtonAddAutoAnswer />
+            {/*<br /><ButtonAddAutoAnswer />*/}
             <br /><ButtonShowFormAnswer />
             {contentsAnswers}
         </div>

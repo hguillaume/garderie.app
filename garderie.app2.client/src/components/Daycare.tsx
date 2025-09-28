@@ -126,12 +126,12 @@ function App() {
             {/*Hello {user ? user.name : <i className='pi pi-spin pi-spinner'></i>}*/}
             Daycare {daycare ? daycare.name : <i className='pi pi-spin pi-spinner'></i>}
             <h1>Kids</h1>
-            <br /><ButtonAddAutoKid />
+            {/*<br /><ButtonAddAutoKid />*/}
             <br /><ButtonShowFormKid />
             {/*<br /><ButtonEditFormKid />*/}
             {contents}
             <h1>Questions</h1>
-            <br /><ButtonAddAutoQuestion />
+            {/*<br /><ButtonAddAutoQuestion />*/}
             <br /><ButtonShowFormQuestion />
             {contentsQuestions}
         </div>

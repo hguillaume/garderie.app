@@ -107,7 +107,7 @@ function App() {
             {isLoggedIn == true && <> Hello {userName} <br /></>}
             {isLoggedIn == true && <ButtonLogout />}
             <h1 id="tableLabel">Daycares</h1>
-            <ButtonAddAutoDaycare />
+            {/*<ButtonAddAutoDaycare />*/}
             <ButtonShowFormDaycare />
             {contents}
         </div>
